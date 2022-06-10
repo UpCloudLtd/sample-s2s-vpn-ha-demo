@@ -1,0 +1,31 @@
+global_defs {
+    enable_script_security
+    script_user root
+}
+
+vrrp_script ipsec_status {
+    script "/etc/keepalived/ipsecstatus.sh"
+    interval 1
+    fall 2
+    rise 2
+    weight 10
+    init_fail
+}
+
+vrrp_instance VI_1 {
+    state MASTER
+    interface eth2
+    virtual_router_id 101
+    priority 101
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass Ch4ng3Th1sPl34s3!
+    }
+    virtual_ipaddress {
+        ${VIRTUAL_IP}
+    }
+    track_script {
+      ipsec_status
+    }
+}
