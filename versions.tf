@@ -3,7 +3,7 @@ terraform {
   required_providers {
     upcloud = {
       source  = "UpCloudLtd/upcloud"
-      version = "~>2.2.0"
+      version = "~>2.7.1"
     }
   }
 }

@@ -93,3 +93,17 @@ resource "upcloud_server" "s2s_vpn_vm" {
     ]
   }
 }
+
+resource "upcloud_server_group" "vpn-ha-pair" {
+  title         = "vpn_ha_group"
+  anti_affinity = true
+  labels = {
+    "key1" = "vpn-ha"
+
+  }
+  members = [
+    upcloud_server.s2s_vpn_vm[0].id,
+    upcloud_server.s2s_vpn_vm[1].id
+  ]
+
+}
