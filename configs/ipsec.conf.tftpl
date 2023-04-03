@@ -11,8 +11,7 @@ conn upcloud-to-remote-tunnel
         right=${REMOTE}
         rightsubnet=${REMOTE_NETWORK}
         ike=aes256-sha256-modp1024,aes256gcm16-sha256-modp4096,aes128-sha1-modp1024!
-        phase2=esp
-        phase2alg=aes256-sha256,aes256gcm16-sha256-modp8192,aes128-sha1!
+        esp=aes256-sha256,aes256gcm16-sha256-modp8192,aes128-sha1!
         aggressive=no
         keyingtries=%forever
         ikelifetime=28800s

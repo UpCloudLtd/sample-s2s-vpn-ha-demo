@@ -15,9 +15,10 @@ resource "upcloud_server" "s2s_vpn_vm" {
   zone       = var.zone
   count      = 2
   plan       = var.server_plan
+  metadata   = true
   depends_on = [upcloud_network.backend_network]
   template {
-    storage = "Ubuntu Server 20.04 LTS (Focal Fossa)"
+    storage = "Ubuntu Server 22.04 LTS (Jammy Jellyfish)"
     size    = 25
   }
   network_interface {
@@ -50,13 +51,13 @@ resource "upcloud_server" "s2s_vpn_vm" {
 
   provisioner "remote-exec" {
     inline = [
-      "apt-get update",
+      "apt-get -o'Dpkg::Options::=--force-confold' -q -y update",
       "echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf",
       "echo 'net.ipv6.conf.all.forwarding = 1' >> /etc/sysctl.conf",
       "echo 'net.ipv4.conf.all.accept_redirects = 0' >> /etc/sysctl.conf",
       "echo 'net.ipv4.conf.all.send_redirects = 0' >> /etc/sysctl.conf",
       "sysctl -p",
-      "apt-get install strongswan strongswan-pki libcharon-extra-plugins libcharon-extauth-plugins libstrongswan-extra-plugins libtss2-tcti-tabrmd-dev keepalived -y",
+      "apt-get -o 'Dpkg::Options::=--force-confold' -q -y install strongswan strongswan-pki libcharon-extra-plugins libcharon-extauth-plugins libstrongswan-extra-plugins libtss2-tcti-tabrmd-dev keepalived",
       "ipsec pki --gen --size 4096 --type rsa --outform pem > /etc/ipsec.d/private/ca.key.pem",
       "ipsec pki --self --in /etc/ipsec.d/private/ca.key.pem --type rsa --dn 'CN=Upcloud VPN VM CA' --ca --lifetime 3650 --outform pem > /etc/ipsec.d/cacerts/ca.cert.pem",
       "ipsec pki --gen --size 4096 --type rsa --outform pem > /etc/ipsec.d/private/server.key.pem",
